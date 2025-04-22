@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Admin Dashboard - Patient Info</title>
+  <style>
+    :root {
+      --primary: #1976d2;
+      --secondary: #f4f6f8;
+      --accent: #2e7d32;
+      --danger: #d32f2f;
+      --white: #ffffff;
+      --gray-dark: #333;
+      --gray-light: #ccc;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--secondary);
+      color: var(--gray-dark);
+    }
+
+    header {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px 40px;
+      font-size: 20px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--gray-light);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      background-color: #f1f1f1;
+      color: #555;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      transition: background-color 0.3s;
+    }
+
+    .tab.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 40px;
+      padding: 20px 0;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    button {
+      grid-column: 1 / -1;
+      padding: 14px;
+      background-color: var(--accent);
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+      color: #555;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header {
+        font-size: 18px;
+        padding: 15px 20px;
+      }
+
+      .container {
+        padding: 20px;
+        margin: 20px;
+      }
+
+      .tab {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        font-size: 13px;
+        padding: 10px 8px;
+      }
+
+      input {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🏥 Hospital Admin Dashboard - Patient Info</header>
+
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('formTab', event)">➕ Add Patient</div>
+      <div class="tab" onclick="switchTab('tableTab', event)">📋 View Records</div>
+    </div>
+
+    <div id="formTab" class="tab-content active">
+      <form id="patientForm">
+        <div class="form-group">
+          <label for="name">Patient Name</label>
+          <input type="text" id="name" required />
+        </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" required />
+        </div>
+        <div class="form-group">
+          <label for="disease">Disease</label>
+          <input type="text" id="disease" required />
+        </div>
+        <div class="form-group">
+          <label for="admission">Admission Date & Time</label>
+          <input type="datetime-local" id="admission" required />
+        </div>
+        <div class="form-group full">
+          <label for="discharge">Discharge Date & Time</label>
+          <input type="datetime-local" id="discharge" required />
+        </div>
+        <button type="submit">✅ Add Patient</button>
+      </form>
+    </div>
+
+    <div id="tableTab" class="tab-content">
+      <div class="table-wrapper">
+        <table id="patientTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Disease</th>
+              <th>Admitted</th>
+              <th>Discharged</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId, event) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      event.target.classList.add("active");
+
+      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+    }
+
+    function formatDateTime(dateString) {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      let hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+
+      return `${day}/${month}/${year}, ${hours}:${minutes} ${ampm}`;
+    }
+
+    document.getElementById("patientForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const disease = document.getElementById("disease").value.trim();
+      const admission = document.getElementById("admission").value;
+      const discharge = document.getElementById("discharge").value;
+
+      if (!name || !age || !disease || !admission || !discharge) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const table = document.querySelector("#patientTable tbody");
+      const row = table.insertRow();
+
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${age}</td>
+        <td>${disease}</td>
+        <td>${formatDateTime(admission)}</td>
+        <td>${formatDateTime(discharge)}</td>
+      `;
+
+      this.reset();
+      switchTab('tableTab', { target: document.querySelector(".tab:nth-child(2)") });
+    });
+  </script>
+</body>
+</html>
