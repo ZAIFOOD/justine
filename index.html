@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Patient Info System</title>
+  <style>
+    :root {
+      --primary-color: #0066cc;
+      --secondary-color: #f5f7fa;
+      --text-color: #333;
+      --border-radius: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--secondary-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      background-color: #eaeaea;
+      color: #555;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      font-weight: bold;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+    }
+
+    .tab:hover {
+      background-color: #dcdcdc;
+    }
+
+    .tab.active {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    form input {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      transition: border-color 0.3s;
+    }
+
+    form input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    form button {
+      margin-top: 10px;
+      padding: 14px;
+      font-size: 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    form button:hover {
+      background-color: #004a99;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hospital Patient Information System</h1>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('formTab', event)">➕ Add Patient</div>
+      <div class="tab" onclick="switchTab('tableTab', event)">📋 Patient Records</div>
+    </div>
+
+    <div id="formTab" class="tab-content active">
+      <form id="patientForm">
+        <div class="form-group">
+          <label for="name">Patient Name</label>
+          <input type="text" id="name" placeholder="Enter full name" required />
+        </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" placeholder="Enter age" required />
+        </div>
+        <div class="form-group">
+          <label for="disease">Disease</label>
+          <input type="text" id="disease" placeholder="Enter diagnosed disease" required />
+        </div>
+        <div class="form-group">
+          <label for="admission">Admission Date & Time</label>
+          <input type="datetime-local" id="admission" required />
+        </div>
+        <div class="form-group">
+          <label for="discharge">Discharge Date & Time</label>
+          <input type="datetime-local" id="discharge" required />
+        </div>
+        <button type="submit">Add Patient</button>
+      </form>
+    </div>
+
+    <div id="tableTab" class="tab-content">
+      <table id="patientTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Disease</th>
+            <th>Admitted</th>
+            <th>Discharged</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId, event) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      event.target.classList.add("active");
+
+      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+    }
+
+    document.getElementById("patientForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const disease = document.getElementById("disease").value.trim();
+      const admission = document.getElementById("admission").value;
+      const discharge = document.getElementById("discharge").value;
+
+      if (!name || !age || !disease || !admission || !discharge) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const table = document.querySelector("#patientTable tbody");
+      const row = table.insertRow();
+
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${age}</td>
+        <td>${disease}</td>
+        <td>${admission.replace("T", " ")}</td>
+        <td>${discharge.replace("T", " ")}</td>
+      `;
+
+      this.reset();
+      switchTab('tableTab', { target: document.querySelector(".tab:nth-child(2)") });
+    });
+  </script>
+</body>
+</html>
